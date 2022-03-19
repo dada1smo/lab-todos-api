@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
-
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const router = Router();
@@ -50,7 +50,15 @@ router.post('/login', async (req, res) => {
       throw new Error('E-mail or password invalid');
     }
 
-    res.status(200).json({ msg: `User ${user.email}, loggedIn` });
+    const payload = {
+      email,
+    };
+
+    const token = jwt.sign(payload, process.env.SECRET_JWT, {
+      expiresIn: '1day',
+    });
+
+    res.status(200).json({ payload, token });
   } catch (error) {
     res.status(401).json({ msg: error.message });
   }
