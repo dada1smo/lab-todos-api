@@ -8,6 +8,10 @@ const router = Router();
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
   try {
+    if (!name || !email || !password) {
+      throw new Error('All fields are required');
+    }
+
     const user = await User.findOne({ email });
 
     if (user) {
