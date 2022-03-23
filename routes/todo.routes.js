@@ -6,8 +6,10 @@ const User = require('../models/User');
 const router = Router();
 
 router.get('/', async (req, res) => {
+  const { email } = req.user;
   try {
-    const allTodos = await Todo.find().populate(
+    const userId = await User.findOne({ email }).select('_id');
+    const allTodos = await Todo.find({ user: userId }).populate(
       'user',
       '-passwordHash -todos -__v'
     );
